@@ -1,20 +1,9 @@
 import styled from 'styled-components';
 
-export function Warning({ includeHotel }) {
+export function Warning({ children }) {
   return(
     <Container>
-      {includeHotel?
-        <h4>
-            Você precisa ter confirmado pagamento antes
-    de fazer a escolha de hospedagem
-        </h4>
-        :
-        <h4>
-          Sua modalidade de ingresso não inclui hospedagem
-Prossiga para a escolha de atividades
-        </h4>
-      }
-
+      <h4>{children}</h4>
     </Container>);
 }
 

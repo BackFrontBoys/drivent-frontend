@@ -5,20 +5,23 @@ import { Warning } from './Warning';
 
 export default function Hotel() {
   const [isValid, setIsValid] = useState(false);
-  const [includeHotel, setIncludeHotel] = useState(true);
+  const [message, setMessage] = useState('');
   const token = useToken();
   async function hotel() {
     try {
       const ticket = await getTickets(token);
 
       if(ticket.status !== 'PAID') {
+        setMessage('Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem');
         return setIsValid(false);
       }else if(ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) {
-        return setIncludeHotel(false);
+        setMessage('Sua modalidade de ingresso não inclui hospedagem. Prossiga para a escolha de atividades');
+        return;
       }else{
         return setIsValid(true);
       };
     } catch (error) {
+      setMessage('Erro em obter informações de pagamento');
       setIsValid(false);
     }
   }
@@ -32,9 +35,7 @@ export default function Hotel() {
       {isValid? 
         <></> 
         : 
-        <Warning
-          includeHotel = {includeHotel}
-        />}
+        <Warning>{message}</Warning>}
     </>);
 }
 
