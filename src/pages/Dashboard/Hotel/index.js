@@ -1,3 +1,7 @@
+import RoomsForm from '../../../components/Rooms';
+
 export default function Hotel() {
-  return 'Hotel: Em breve!';
+  return (
+    <></>
+  );
 }
