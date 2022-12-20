@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import useToken from '../../../hooks/useToken';
 import { getHotel } from '../../../services/hotelApi';
 import { CardHotels } from './CardHotels';
+import RoomsForm from '../../../components/Rooms';
 
 export function SelectHotels() {
   const [list, setList] = useState([]);
@@ -11,10 +12,10 @@ export function SelectHotels() {
   const token = useToken();
 
   function selectHotel(id) {
-    if(id !== 0 && selectedHotelId !== id) {
+    if (id !== 0 && selectedHotelId !== id) {
       setSelectedHotelId(id);
       setRenderRooms(true);
-      return;   
+      return;
     }
   }
 
@@ -24,12 +25,9 @@ export function SelectHotels() {
 
   useEffect(() => {
     listHotels();
-    if(setRenderRooms) {
-      console.log(selectedHotelId); //remover quando adicionar a função para listar os quartos
-    }
   }, [selectedHotelId]);
 
-  return(
+  return (
     <Container>
       <h1>Escolha de hotel e quarto</h1>
       <h4>Primeiro, escolha seu hotel</h4>
@@ -37,12 +35,16 @@ export function SelectHotels() {
         {list.map((item, index) => <CardHotels
           key={index}
           id={item.id}
-          image={item.image} 
+          image={item.image}
           name={item.name}
           setSelectedHotelId={setSelectedHotelId}
-          selectHotel={selectHotel}/>)}
+          selectHotel={selectHotel} />)}
       </ul>
-      {renderRooms ? <></> : <></>}
+      {renderRooms ?
+        (
+          <RoomsForm hotelId={selectedHotelId} />
+        ) : 
+        <></>}
     </Container>
   );
 }
