@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
@@ -18,7 +18,9 @@ export default function RoomsForm({ hotelId }) {
 
         {
           hotelRooms.Rooms.map(room => (
-            <RoomContainer id={room.id} name={room.name} capacity={room.capacity} booking={room.Booking} isSelected={(room.id===selected)} setSelected={setSelected} />
+            <RoomContainer id={room.id} name={room.name}
+              capacity={room.capacity} booking={room.Booking}
+              isSelected={(room.id === selected)} setSelected={setSelected} />
           ))
         }
 
