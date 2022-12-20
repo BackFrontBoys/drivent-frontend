@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import useToken from '../../../hooks/useToken';
 import { getTickets } from '../../../services/ticketApi';
+import { SelectHotels } from './SelectHotels';
 import { Warning } from './Warning';
 
 export default function Hotel() {
@@ -33,7 +34,7 @@ export default function Hotel() {
   return (
     <>
       {isValid? 
-        <></> 
+        <SelectHotels/> 
         : 
         <Warning>{message}</Warning>}
     </>);

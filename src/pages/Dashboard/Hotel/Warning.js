@@ -16,8 +16,7 @@ const Container = styled.div`
 
   h4{
     max-width: 410px;
-    font-family: 'Roboto';
-    font-style: normal;
+    font-family: 'Roboto', sans-serif;
     font-weight: 400;
     font-size: 20px;
     line-height: 23px;
