@@ -7,9 +7,11 @@ import 'react-credit-cards-2/es/styles-compiled.css';
 import Button from '../../../components/Form/Button';
 import useSavePayment from '../../../hooks/api/useSavePayment';
 import { toast } from 'react-toastify';
+import { IconContext } from 'react-icons';
+import { IoCheckmarkCircleSharp } from 'react-icons/io5';
 
 export default function Payment() {
-  const { ticket } = useTicket();
+  const { ticket, getTicket } = useTicket();
   const { savePayment } = useSavePayment();
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
@@ -47,6 +49,7 @@ export default function Payment() {
         return toast('Dados do cartão incorreto!');
       }
       await savePayment(ticket?.id, cardData);
+      getTicket();
       resetForm();
       toast('Pagamento feito com sucesso!');
     } catch (err) {
@@ -77,64 +80,120 @@ export default function Payment() {
 
       <SubTitle variant="h6" color="textSecondary">Pagamento</SubTitle>
 
-      <PaymentCard>
-        <div>
-          <Cards
-            cvc={cvc}
-            expiry={expiry}
-            focused={focus}
-            name={name}
-            number={number}
-          />
-        </div>
+      {ticket?.status === 'RESERVED' ?
+        (
+          <>
+            <PaymentCard>
+              <div>
+                <Cards
+                  cvc={cvc}
+                  expiry={expiry}
+                  focused={focus}
+                  name={name}
+                  number={number}
+                />
+              </div>
 
-        <PaymentForm>
-          <input
-            type="tel"
-            name="card-number"
-            placeholder="Card Number"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            onFocus={(e) => setFocus(e.target.name)}
-          />
+              <PaymentForm>
+                <input
+                  type="tel"
+                  name="card-number"
+                  placeholder="Card Number"
+                  value={number}
+                  onChange={(e) => setNumber(e.target.value)}
+                  onFocus={(e) => setFocus(e.target.name)}
+                />
 
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onFocus={(e) => setFocus(e.target.name)}
-          />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  onFocus={(e) => setFocus(e.target.name)}
+                />
 
-          <div>
-            <input
-              className="expiry"
-              type="text"
-              name="expiry"
-              placeholder="Valid Thru"
-              value={expiry}
-              onChange={(e) => setExpiry(e.target.value)}
-              onFocus={(e) => setFocus(e.target.name)}
-            />
+                <div>
+                  <input
+                    className="expiry"
+                    type="text"
+                    name="expiry"
+                    placeholder="Valid Thru"
+                    value={expiry}
+                    onChange={(e) => setExpiry(e.target.value)}
+                    onFocus={(e) => setFocus(e.target.name)}
+                  />
 
-            <input
-              className="cvc"
-              type="tel"
-              name="cvc"
-              placeholder="CVC"
-              value={cvc}
-              onChange={(e) => setCvc(e.target.value)}
-              onFocus={(e) => setFocus(e.target.name)}
-            />
-          </div>
-        </PaymentForm>
-      </PaymentCard>
+                  <input
+                    className="cvc"
+                    type="tel"
+                    name="cvc"
+                    placeholder="CVC"
+                    value={cvc}
+                    onChange={(e) => setCvc(e.target.value)}
+                    onFocus={(e) => setFocus(e.target.name)}
+                  />
+                </div>
+              </PaymentForm>
+            </PaymentCard>
 
-      <Button onClick={handleSubmit}>FINALIZAR PAGAMENTO</Button>
+            <Button onClick={handleSubmit}>FINALIZAR PAGAMENTO</Button>
+          </>
+        )
+        :
+        (
+          <Paid>
+            <IconContext.Provider
+              value={{
+                color: '#36B853',
+                className: 'global-class-name',
+                size: '50px',
+              }}>
+              <IoCheckmarkCircleSharp className='ion-icon' />
+            </IconContext.Provider>
+
+            <div>
+              <Info variant='body1' style={{ fontWeight: 700 }} >Pagamento Confirmado!</Info>
+              <Info variant='body1'>Prossiga para escolha de hospedagem e atividades</Info>
+            </div>
+          </Paid>
+        )}
     </>
   );
 };
+
+const StyledTypography = styled(Typography)`
+  margin-bottom: 30px!important;
+`;
+
+const SubTitle = styled(Typography)`
+  margin-bottom: 20px!important;
+`;
+
+const TicketWrapper = styled.div`
+  width: 290px;
+  height: 108px;
+  border-radius: 20px;
+  background-color: #FFEED2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const Paid = styled.div`
+  margin-top: -10px;
+  display: flex;
+  align-items: center;
+
+  .ion-icon {
+    margin-right: 10px;
+  }
+`;
+
+const Info = styled(Typography)`
+`;
 
 const PaymentCard = styled.div`
   display: flex;
@@ -184,27 +243,4 @@ const PaymentForm = styled.form`
     width: 15%;
     margin-left: 30px;
   }
-`;
-
-const StyledTypography = styled(Typography)`
-  margin-bottom: 30px!important;
-`;
-
-const SubTitle = styled(Typography)`
-  margin-bottom: 20px!important;
-`;
-
-const TicketWrapper = styled.div`
-  width: 290px;
-  height: 108px;
-  border-radius: 20px;
-  background-color: #FFEED2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const Info = styled(Typography)`
 `;
