@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import useTicket from '../../../hooks/api/useTicket';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -6,58 +5,74 @@ import { useState } from 'react';
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/es/styles-compiled.css';
 import Button from '../../../components/Form/Button';
+import useSavePayment from '../../../hooks/api/useSavePayment';
+import { toast } from 'react-toastify';
 
 export default function Payment() {
   const { ticket } = useTicket();
-  const [data, setData] = useState(null);
+  const { savePayment } = useSavePayment();
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState('');
 
-  useEffect(() => {
-    setData(ticket);
-  }, [ticket]);
-
   function renderTicketInfo() {
-    if(data?.TicketType.isRemote === false && data?.TicketType.includesHotel === false) {
+    if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === false) {
       return 'Presencial + Sem Hotel';
     }
 
-    if(data?.TicketType.isRemote === false && data?.TicketType.includesHotel === true) {
+    if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === true) {
       return 'Presencial + Com Hotel';
     }
 
     return 'Online';
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    const body = {
+    const cardData = {
       cvc,
       expiry,
-      focus,
-      name,
+      issuer: name,
       number,
     };
 
-    console.log(body);
+    try {
+      if (cvc.length !== 3 ||
+        (expiry.length < 4 || expiry.length > 5) ||
+        name.length < 6 ||
+        number.length !== 16) {
+        return toast('Dados do cartão incorreto!');
+      }
+      await savePayment(ticket?.id, cardData);
+      resetForm();
+      toast('Pagamento feito com sucesso!');
+    } catch (err) {
+      toast('Não foi possível efetuar o pagamento!');
+    }
   }
-  
+
+  function resetForm() {
+    setCvc('');
+    setExpiry('');
+    setName('');
+    setNumber('');
+  }
+
   return (
     <>
       <StyledTypography variant="h4">Ingresso e pagamento</StyledTypography>
       <SubTitle variant="h6" color="textSecondary">Ingresso escolhido</SubTitle>
 
       <TicketWrapper>
-        <TicketInfo variant="subtitle1">{renderTicketInfo()}</TicketInfo>
-        <TicketInfo variant="subtitle1" color="textSecondary">
-          R$ {data?.TicketType.price
+        <Info variant="subtitle1">{renderTicketInfo()}</Info>
+        <Info variant="subtitle1" color="textSecondary">
+          R$ {ticket?.TicketType.price
             .toString()
             .slice(0, -2)}
-        </TicketInfo>
+        </Info>
       </TicketWrapper>
 
       <SubTitle variant="h6" color="textSecondary">Pagamento</SubTitle>
@@ -70,22 +85,22 @@ export default function Payment() {
             focused={focus}
             name={name}
             number={number}
-          />       
-        </div>       
+          />
+        </div>
 
         <PaymentForm>
-          <input 
-            type="tel" 
-            name="card-number" 
+          <input
+            type="tel"
+            name="card-number"
             placeholder="Card Number"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
             onFocus={(e) => setFocus(e.target.name)}
           />
 
-          <input 
-            type="text" 
-            name="name" 
+          <input
+            type="text"
+            name="name"
             placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -94,9 +109,9 @@ export default function Payment() {
 
           <div>
             <input
-              className="expiry"  
-              type="text" 
-              name="expiry" 
+              className="expiry"
+              type="text"
+              name="expiry"
               placeholder="Valid Thru"
               value={expiry}
               onChange={(e) => setExpiry(e.target.value)}
@@ -104,21 +119,20 @@ export default function Payment() {
             />
 
             <input
-              className="cvc" 
-              type="tel" 
-              name="cvc" 
+              className="cvc"
+              type="tel"
+              name="cvc"
               placeholder="CVC"
               value={cvc}
               onChange={(e) => setCvc(e.target.value)}
               onFocus={(e) => setFocus(e.target.name)}
-            />         
-          </div>          
+            />
+          </div>
         </PaymentForm>
-      </PaymentCard>      
+      </PaymentCard>
 
       <Button onClick={handleSubmit}>FINALIZAR PAGAMENTO</Button>
     </>
-    
   );
 };
 
@@ -148,7 +162,7 @@ const PaymentForm = styled.form`
   }
 
   input {
-    margin-bottom: 20px;
+    margin-bottom: 23px;
     width: 50%;
     height: 45px;
     border-radius: 5px;
@@ -192,5 +206,5 @@ const TicketWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const TicketInfo = styled(Typography)`
+const Info = styled(Typography)`
 `;
