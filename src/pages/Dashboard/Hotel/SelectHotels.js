@@ -37,6 +37,7 @@ export function SelectHotels({ setNeedBooking }) {
           id={item.id}
           image={item.image}
           name={item.name}
+          Rooms={item.Rooms}
           setSelectedHotelId={setSelectedHotelId}
           selectHotel={selectHotel} />)}
       </ul>
