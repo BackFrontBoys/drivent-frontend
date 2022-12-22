@@ -3,12 +3,49 @@ import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
 import useHotelRooms from '../../hooks/api/useRooms';
+import useBookRoom from '../../hooks/api/useBookRoom';
 import RoomContainer from './RoomContainer';
+import StyledButton from '../StyledButton';
+import { toast } from 'react-toastify';
+import useBooking from '../../hooks/api/useBooking';
+import useUpdateBooking from '../../hooks/api/useUpdateBooking';
 
-export default function RoomsForm({ hotelId }) {
+export default function RoomsForm({ hotelId, setNeedBooking }) {
   const { hotelRooms } = useHotelRooms(hotelId);
+  const { bookRoomLoading, bookRoom } = useBookRoom();
+  const { bookingError, booking } = useBooking();
+
+  let isDisabled = Boolean(bookRoomLoading);
+
+  if (!bookingError) {
+    const { updateBookingLoading } = useUpdateBooking(booking.id);
+    isDisabled = updateBookingLoading;
+  }
 
   const [selected, setSelected] = useState(0);
+
+  async function handleBookRoom(id) {
+    if (selected <= 0) {
+      return;
+    }
+
+    const data = {
+      roomId: id
+    };
+
+    try {
+      if (bookingError) {
+        await bookRoom(data);
+        setNeedBooking(false);
+      } else if (!bookingError) {
+        await useUpdateBooking(booking.id).updateBooking(data);
+        setNeedBooking(false);
+      }
+      toast('Quarto reservado com sucesso');
+    } catch (err) {
+      toast('Não foi possível reservar o quarto');
+    }
+  }
 
   return (
     <>
@@ -25,6 +62,9 @@ export default function RoomsForm({ hotelId }) {
         }
 
       </RoomsContainer>
+
+      <StyledButton onClick={() => { handleBookRoom(selected); }}
+        disabled={isDisabled}>RESERVAR QUARTO</StyledButton>
 
     </>);
 }

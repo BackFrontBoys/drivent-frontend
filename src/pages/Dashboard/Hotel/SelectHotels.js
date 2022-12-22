@@ -5,7 +5,7 @@ import { getHotel } from '../../../services/hotelApi';
 import { CardHotels } from './CardHotels';
 import RoomsForm from '../../../components/Rooms';
 
-export function SelectHotels() {
+export function SelectHotels({ setNeedBooking }) {
   const [list, setList] = useState([]);
   const [selectedHotelId, setSelectedHotelId] = useState(0); //pega o id do hotel selecionado
   const [renderRooms, setRenderRooms] = useState(false); //mudar para true so quando selecionar um hotel com id > 0
@@ -42,7 +42,7 @@ export function SelectHotels() {
       </ul>
       {renderRooms ?
         (
-          <RoomsForm hotelId={selectedHotelId} />
+          <RoomsForm hotelId={selectedHotelId} setNeedBooking={setNeedBooking} />
         ) : 
         <></>}
     </Container>
