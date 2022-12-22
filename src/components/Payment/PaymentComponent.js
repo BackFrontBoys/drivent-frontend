@@ -4,20 +4,19 @@ import { useState } from 'react';
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/es/styles-compiled.css';
 import Button from '../../components/Form/Button';
-import useEnrollment from '../../hooks/api/useEnrollment';
 import useSavePayment from '../../hooks/api/useSavePayment';
 import { toast } from 'react-toastify';
 import { IconContext } from 'react-icons';
 import { IoCheckmarkCircleSharp } from 'react-icons/io5';
 
-export default function PaymentComponent({ ticket, getTicket }) {
-  const { enrollment } = useEnrollment();
+export default function PaymentComponent({ enrollment, ticket, getTicket }) {
   const { savePayment } = useSavePayment();
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState('');
+  const totalPrice = JSON.parse(localStorage.getItem('price'));   
 
   function renderTicketInfo() {
     if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === false) {
@@ -84,7 +83,7 @@ export default function PaymentComponent({ ticket, getTicket }) {
             <TicketWrapper>
               <Info variant="subtitle1">{renderTicketInfo()}</Info>
               <Info variant="subtitle1" color="textSecondary">
-                R$ {ticket?.TicketType.price
+                R$ {totalPrice
                   .toString()
                   .slice(0, -2)}
               </Info>
