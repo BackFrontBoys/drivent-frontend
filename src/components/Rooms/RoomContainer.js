@@ -55,7 +55,7 @@ export default function RoomContainer({ id, name, capacity, booking, isSelected,
           roomState.map((value, key) => (
             value ?
               (
-                (isSelected && roomState[key-1]===false) ?
+                ((isSelected && roomState[key-1]===false) || (key===0 && roomState[1]===true)) ?
                   (
                     <PersonIcon color={'secondary'} sx={{ fontSize: 25, color: pink[400] }} />
                   ) :
@@ -93,6 +93,8 @@ const RoomButton = styled.button`
   color: ${props => (props.fontColor)};
   background-color: ${props => (props.backgroundColor)};
   font-size: 18px;
+
+  font-family: 'Roboto', sans-serif;
 `;
 
 const CapacityContainer = styled.div`
