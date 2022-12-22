@@ -10,7 +10,10 @@ export default function Payment() {
   const [ticketTypeId, setTicketTypeId] = useState({});
   const [showTotal, setShowTotal] = useState(false);
   const [showHosting, setShowHosting] = useState(false);
-  //const [color, setColor] = useState('#FFFFFF' : '#FFEED2');
+  const [online, setOnline] = useState('white');
+  const [presencial, setPresencial] = useState('white');
+  const [noHotel, setNoHotel] = useState('white');
+  const [withHotel, setWithHotel] = useState('white');
   const [data, setData] = useState();
   const { enrollment } = useEnrollment();
   const token = useToken();
@@ -41,6 +44,26 @@ export default function Payment() {
     }
   }
 
+  function handleColor(prop) {
+    switch (prop) {
+    case 'online':
+      setOnline('online');
+      break;
+
+    case 'presencial':
+      setPresencial('presencial');
+      break;
+    case 'noHotel':
+      setNoHotel('noHotel');
+      break;
+    case 'withHotel':
+      setWithHotel('withHotel');
+      break;
+    default:
+      setOnline('white');
+    }
+  }
+
   if (data === undefined) {
     return <h1>Loading...</h1>;
   }
@@ -64,22 +87,28 @@ export default function Payment() {
               {data.map((i, index) =>
                 !i.isRemote && !i.includesHotel ? (
                   <div
+                    className={online}
                     onClick={() => {
                       setShowTotal(false);
                       setTicketPrice(i.price);
                       setShowHosting(true);
                       setTicketTypeId({ ticketTypeId: i.id });
+                      setPresencial('white');
+                      handleColor('online');
                     }}
                   >
                     <h3>{i.name}</h3> <p>R$ {i.price}</p>
                   </div>
                 ) : i.isRemote ? (
                   <div
+                    className={presencial}
                     onClick={() => {
                       setTicketPrice(i.price);
                       setShowTotal(true);
                       setShowHosting(false);
                       setTicketTypeId({ ticketTypeId: i.id });
+                      setOnline('white');
+                      handleColor('presencial');
                     }}
                   >
                     <h3>{i.name}</h3> <p>R$ {i.price}</p>
@@ -99,10 +128,12 @@ export default function Payment() {
           <nav>
             {data.map((i, index) =>
               !i.isRemote && !i.includesHotel ? (
-                <div
+                <div className={noHotel}
                   onClick={() => {
                     setShowTotal(true);
                     setTicketTypeId({ ticketTypeId: i.id });
+                    setWithHotel('white');
+                    handleColor('noHotel');
                   }}
                 >
                   <h3>Sem Hotel</h3> <p>+ R$ 0</p>
@@ -114,11 +145,13 @@ export default function Payment() {
 
             {data.map((i, index) =>
               !i.isRemote && i.includesHotel ? (
-                <div
+                <div className={withHotel}
                   onClick={() => {
                     setTicketPrice(ticketPrice + i.price);
                     setShowTotal(true);
                     setTicketTypeId({ ticketTypeId: i.id });
+                    setNoHotel('white');
+                    handleColor('withHotel');
                   }}
                 >
                   <h3>Com Hotel</h3> <p>+ R$ {i.price}</p>
@@ -230,8 +263,26 @@ const Modality = styled.aside`
       }
     }
 
+    .white {
+      background-color: #ffffff;
+    }
+    .online {
+      background-color: #FFEED2;      
+    }
+
+    .presencial {
+      background-color: #FFEED2;
+    }
+
+    .noHotel {
+      background-color: #FFEED2;
+    }
+
+    .withHotel{
+      background-color: #FFEED2;
+    }
+
     div:hover {
-      background-color: #ffeed2;
       cursor: pointer;
     }
   }
