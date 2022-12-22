@@ -1,46 +1,148 @@
+import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import useToken from '../../../hooks/useToken';
+import useEnrollment from '../../../hooks/api/useEnrollment';
+import { getTicketTypes, postTicket } from '../../../services/ticketApi';
 
 export default function Payment() {
+  const [ticketPrice, setTicketPrice] = useState(0);
+  const [ticketTypeId, setTicketTypeId] = useState({});
+  const [showTotal, setShowTotal] = useState(false);
+  const [showHosting, setShowHosting] = useState(false);
+  //const [color, setColor] = useState('#FFFFFF' : '#FFEED2');
+  const [data, setData] = useState();
+  const { enrollment } = useEnrollment();
+  const token = useToken();
+
+  async function ticket() {
+    try {
+      const ticketType = await getTicketTypes(token);
+
+      setData(ticketType);
+    } catch (error) {
+      toast('Desculpe, houve um erro!');
+    }
+  }
+
+  useEffect(() => {
+    ticket();
+  }, []);
+
+  async function postTicketType() {
+    try {
+      const insertTicket = await postTicket(ticketTypeId, token);
+
+      if (insertTicket) {
+        toast('Ingresso reservado com sucesso!');
+      }
+    } catch (error) {
+      toast('Não foi possível reservar seu ingresso!');
+    }
+  }
+
+  if (data === undefined) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <Main>
       <div className="title"> Ingresso e pagamento </div>
 
-      {/* <Empty>
-        <div className="noEnrollment">
-          <h1>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</h1>
-        </div>
-      </Empty> */}
+      {!enrollment ? (
+        <Empty>
+          <div className="noEnrollment">
+            <h1>Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso</h1>
+          </div>
+        </Empty>
+      ) : (
+        <Modality>
+          <>
+            <h2>Primeiro, escolha sua modalidade de ingresso</h2>
 
-      <Modality>
-        <h2>Primeiro, escolha sua modalidade de ingresso</h2>
-        <nav>
-          <div>
-            <h3>Presencial</h3> <p>R$ 250</p>
-          </div>
-          <div>
-            <h3>Online</h3> <p>R$ 250</p>
-          </div>
-        </nav>
-      </Modality>
+            <nav>
+              {data.map((i, index) =>
+                !i.isRemote && !i.includesHotel ? (
+                  <div
+                    onClick={() => {
+                      setShowTotal(false);
+                      setTicketPrice(i.price);
+                      setShowHosting(true);
+                      setTicketTypeId({ ticketTypeId: i.id });
+                    }}
+                  >
+                    <h3>{i.name}</h3> <p>R$ {i.price}</p>
+                  </div>
+                ) : i.isRemote ? (
+                  <div
+                    onClick={() => {
+                      setTicketPrice(i.price);
+                      setShowTotal(true);
+                      setShowHosting(false);
+                      setTicketTypeId({ ticketTypeId: i.id });
+                    }}
+                  >
+                    <h3>{i.name}</h3> <p>R$ {i.price}</p>
+                  </div>
+                ) : (
+                  ''
+                )
+              )}
+            </nav>
+          </>
+        </Modality>
+      )}
 
-      <Modality>
-        <h2>Ótimo! Agora escolha sua modalidade de hospedagem</h2>
-        <nav>
-          <div>
-            <h3>Sem Hotel</h3> <p>+ R$ 250</p>
-          </div>
-          <div>
-            <h3>Com Hotel</h3> <p>+ R$ 250</p>
-          </div>
-        </nav>
-      </Modality>
+      {showHosting ? (
+        <Modality>
+          <h2>Ótimo! Agora escolha sua modalidade de hospedagem</h2>
+          <nav>
+            {data.map((i, index) =>
+              !i.isRemote && !i.includesHotel ? (
+                <div
+                  onClick={() => {
+                    setShowTotal(true);
+                    setTicketTypeId({ ticketTypeId: i.id });
+                  }}
+                >
+                  <h3>Sem Hotel</h3> <p>+ R$ 0</p>
+                </div>
+              ) : (
+                ''
+              )
+            )}
 
-      <BookTicket>
-        <h5>
-          Fechado! O total ficou em <b style={{ fontWeight: 'bold' }}>R$ 100</b>. Agora é só confirmar:
-        </h5>
-        <button>RESERVAR INGRESSO</button>
-      </BookTicket>
+            {data.map((i, index) =>
+              !i.isRemote && i.includesHotel ? (
+                <div
+                  onClick={() => {
+                    setTicketPrice(ticketPrice + i.price);
+                    setShowTotal(true);
+                    setTicketTypeId({ ticketTypeId: i.id });
+                  }}
+                >
+                  <h3>Com Hotel</h3> <p>+ R$ {i.price}</p>
+                </div>
+              ) : (
+                ''
+              )
+            )}
+          </nav>
+        </Modality>
+      ) : (
+        ''
+      )}
+
+      {showTotal ? (
+        <BookTicket>
+          <h5>
+            Fechado! O total ficou em <b style={{ fontWeight: 'bold' }}>R$ {ticketPrice}</b>. Agora é só confirmar:
+          </h5>
+          <button onClick={() => postTicketType()}>RESERVAR INGRESSO</button>
+        </BookTicket>
+      ) : (
+        ''
+      )}
     </Main>
   );
 }
@@ -127,6 +229,11 @@ const Modality = styled.aside`
         padding-top: 5px;
       }
     }
+
+    div:hover {
+      background-color: #ffeed2;
+      cursor: pointer;
+    }
   }
 `;
 
@@ -161,5 +268,6 @@ const BookTicket = styled.div`
     font-size: 14px;
     text-align: center;
     color: #000000;
+    cursor: pointer;
   }
 `;
