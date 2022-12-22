@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import StyledCard from '../StyledCard';
 import StyledButton from '../StyledButton';
 
-export default function BookedRoom({ booking }) {
+export default function BookedRoom({ booking, setNeedBooking }) {
   let roomType = 'Single';
 
   if (Number(booking.Room.capacity) === 2) {
@@ -31,7 +31,7 @@ export default function BookedRoom({ booking }) {
         <h3>Você {roomType === 'Single' ? '' : `você e mais ${roomMates}`}</h3>
       </StyledCard>
 
-      <StyledButton>TROCAR DE QUARTO</StyledButton>
+      <StyledButton onClick={() => { setNeedBooking(true); }}>TROCAR DE QUARTO</StyledButton>
     </>
   );
 }

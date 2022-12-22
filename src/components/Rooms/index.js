@@ -7,10 +7,20 @@ import useBookRoom from '../../hooks/api/useBookRoom';
 import RoomContainer from './RoomContainer';
 import StyledButton from '../StyledButton';
 import { toast } from 'react-toastify';
+import useBooking from '../../hooks/api/useBooking';
+import useUpdateBooking from '../../hooks/api/useUpdateBooking';
 
 export default function RoomsForm({ hotelId, setNeedBooking }) {
   const { hotelRooms } = useHotelRooms(hotelId);
   const { bookRoomLoading, bookRoom } = useBookRoom();
+  const { bookingError, booking } = useBooking();
+
+  let isDisabled = Boolean(bookRoomLoading);
+
+  if (!bookingError) {
+    const { updateBookingLoading } = useUpdateBooking(booking.id);
+    isDisabled = updateBookingLoading;
+  }
 
   const [selected, setSelected] = useState(0);
 
@@ -24,8 +34,13 @@ export default function RoomsForm({ hotelId, setNeedBooking }) {
     };
 
     try {
-      await bookRoom(data);
-      setNeedBooking(false);
+      if (bookingError) {
+        await bookRoom(data);
+        setNeedBooking(false);
+      } else if (!bookingError) {
+        await useUpdateBooking(booking.id).updateBooking(data);
+        setNeedBooking(false);
+      }
       toast('Quarto reservado com sucesso');
     } catch (err) {
       toast('Não foi possível reservar o quarto');
@@ -49,7 +64,7 @@ export default function RoomsForm({ hotelId, setNeedBooking }) {
       </RoomsContainer>
 
       <StyledButton onClick={() => { handleBookRoom(selected); }}
-        disabled={bookRoomLoading}>RESERVAR QUARTO</StyledButton>
+        disabled={isDisabled}>RESERVAR QUARTO</StyledButton>
 
     </>);
 }

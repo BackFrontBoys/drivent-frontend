@@ -42,7 +42,7 @@ export default function Hotel() {
           needBooking ?
             <SelectHotels setNeedBooking={setNeedBooking} />
             :
-            <BookedRoom booking={booking} />
+            <BookedRoom booking={booking} setNeedBooking={setNeedBooking} />
         )
         :
         <Warning>{message}</Warning>}
