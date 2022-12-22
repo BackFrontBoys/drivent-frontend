@@ -132,6 +132,7 @@ export default function Payment() {
                   onClick={() => {
                     setShowTotal(true);
                     setTicketTypeId({ ticketTypeId: i.id });
+                    setTicketPrice(i.price);
                     setWithHotel('white');
                     handleColor('noHotel');
                   }}
