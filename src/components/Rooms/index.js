@@ -7,7 +7,6 @@ import RoomContainer from './RoomContainer';
 import StyledButton from '../StyledButton';
 import { toast } from 'react-toastify';
 import useBooking from '../../hooks/api/useBooking';
-import useUpdateBooking from '../../hooks/api/useUpdateBooking';
 import useToken from '../../hooks/useToken';
 import { getRooms } from '../../services/roomsApi';
 import { updateBooking } from '../../services/roomsApi';
@@ -42,20 +41,16 @@ export default function RoomsForm({ hotelId, setNeedBooking, needUpdate, setNeed
     };
 
     try {
-      console.log(needUpdate);
       if (!needUpdate) {
         await bookRoom(data);
         setNeedBooking(false);
       } else if (needUpdate) {
-        console.log(booking.id);
-        console.log(data);
         await updateBooking(token, booking.id, data);
         setNeedBooking(false);
         setNeedUpdate(false);
       }
       toast('Quarto reservado com sucesso');
     } catch (err) {
-      console.log(err);
       toast('Não foi possível reservar o quarto');
     }
   }
