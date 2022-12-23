@@ -44,7 +44,7 @@ export function SelectHotels({ setNeedBooking }) {
           />
         ))}
       </ul>
-      {renderRooms ? <RoomsForm hotelId={selectedHotelId} setNeedBooking={setNeedBooking} /> : <></>}
+      {renderRooms ? <RoomsForm  hotelId={selectedHotelId} setNeedBooking={setNeedBooking} /> : <></>}
     </Container>
   );
 }
