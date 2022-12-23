@@ -34,7 +34,7 @@ export default function BookedRoom({ setNeedBooking, setNeedUpdate }) {
         <h4>Quarto reservado</h4>
         <h3>{booking.Room.name} ({roomType})</h3>
         <h4>Pessoas no seu quarto</h4>
-        <h3>Você {roomType === 'Single' ? '' : `você e mais ${roomMates}`}</h3>
+        <h3>{(roomType === 'Single' || roomMates===0) ? 'Você' : `Você e mais ${roomMates}`}</h3>
       </StyledCard>
 
       <StyledButton onClick={() => { setNeedBooking(true); setNeedUpdate(true); }}>TROCAR DE QUARTO</StyledButton>
