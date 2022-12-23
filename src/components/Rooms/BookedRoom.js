@@ -2,36 +2,42 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import StyledCard from '../StyledCard';
 import StyledButton from '../StyledButton';
+import useBooking from '../../hooks/api/useBooking';
 
-export default function BookedRoom({ booking, setNeedBooking }) {
+export default function BookedRoom({ setNeedBooking, setNeedUpdate }) {
+  const { booking } = useBooking();
+  
   let roomType = 'Single';
+  let roomMates = 0;
 
-  if (Number(booking.Room.capacity) === 2) {
-    roomType = 'Double';
+  if (booking) {
+    if (Number(booking.Room.capacity) === 2) {
+      roomType = 'Double';
+    }
+  
+    if (Number(booking.Room.capacity) === 3) {
+      roomType = 'Triple';
+    }
+  
+    roomMates = booking.Room.Booking.length - 1;
   }
 
-  if (Number(booking.Room.capacity) === 3) {
-    roomType = 'Triple';
-  }
-
-  const roomMates = booking.Room.Booking.length - 1;
-
-  return (
+  return (!booking ? <></> :
     <>
       <Header variant="h4">Escolha de hotel e quarto</Header>
 
       <InfoHeader variant="h6">Você já escolheu seu quarto:</InfoHeader>
 
       <StyledCard>
-        <img src={booking.Hotel.image} alt='hotel' />
-        <h5>{booking.Hotel.name}</h5>
+        <img src={booking.Room.Hotel.image} alt='hotel' />
+        <h5>{booking.Room.Hotel.name}</h5>
         <h4>Quarto reservado</h4>
         <h3>{booking.Room.name} ({roomType})</h3>
         <h4>Pessoas no seu quarto</h4>
         <h3>Você {roomType === 'Single' ? '' : `você e mais ${roomMates}`}</h3>
       </StyledCard>
 
-      <StyledButton onClick={() => { setNeedBooking(true); }}>TROCAR DE QUARTO</StyledButton>
+      <StyledButton onClick={() => { setNeedBooking(true); setNeedUpdate(true); }}>TROCAR DE QUARTO</StyledButton>
     </>
   );
 }

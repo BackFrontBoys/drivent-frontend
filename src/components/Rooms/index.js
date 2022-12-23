@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
-import useHotelRooms from '../../hooks/api/useRooms';
 import useBookRoom from '../../hooks/api/useBookRoom';
 import RoomContainer from './RoomContainer';
 import StyledButton from '../StyledButton';
@@ -11,12 +10,13 @@ import useBooking from '../../hooks/api/useBooking';
 import useUpdateBooking from '../../hooks/api/useUpdateBooking';
 import useToken from '../../hooks/useToken';
 import { getRooms } from '../../services/roomsApi';
+import { updateBooking } from '../../services/roomsApi';
 
-export default function RoomsForm({ update, hotelId, setNeedBooking }) {
-  //const { hotelRooms, hotelRoomsLoading } = useHotelRooms(hotelId);
+export default function RoomsForm({ hotelId, setNeedBooking, needUpdate, setNeedUpdate }) {
   const [hotelRooms, setHotelRooms] = useState([]);
   const [hotelRoomsLoading, setHotelRoomsLoading] = useState(true);
   const { bookRoomLoading, bookRoom } = useBookRoom();
+  const [isDisabled, setIsDisabled] = useState(Boolean(bookRoomLoading));
   const { booking } = useBooking();
   const token = useToken();
 
@@ -25,18 +25,9 @@ export default function RoomsForm({ update, hotelId, setNeedBooking }) {
     setHotelRoomsLoading(false);
   }, [hotelId]);
 
-  console.log(hotelRooms);
-
   async function listRooms() {
     const response = await getRooms(hotelId, token);
     setHotelRooms(response.Rooms);
-  } 
-
-  let isDisabled = Boolean(bookRoomLoading);
-
-  if (booking) {
-    const { updateBookingLoading } = useUpdateBooking(booking.id);
-    isDisabled = updateBookingLoading;
   }
 
   const [selected, setSelected] = useState(0);
@@ -51,15 +42,20 @@ export default function RoomsForm({ update, hotelId, setNeedBooking }) {
     };
 
     try {
-      if (!booking) {
+      console.log(needUpdate);
+      if (!needUpdate) {
         await bookRoom(data);
         setNeedBooking(false);
-      } else if (booking) {
-        await useUpdateBooking(booking.id).updateBooking(data);
+      } else if (needUpdate) {
+        console.log(booking.id);
+        console.log(data);
+        await updateBooking(token, booking.id, data);
         setNeedBooking(false);
+        setNeedUpdate(false);
       }
       toast('Quarto reservado com sucesso');
     } catch (err) {
+      console.log(err);
       toast('Não foi possível reservar o quarto');
     }
   }
@@ -72,7 +68,7 @@ export default function RoomsForm({ update, hotelId, setNeedBooking }) {
         {hotelRoomsLoading ? (
           <></>
         ) : (
-          hotelRooms.Rooms.map((room) => (
+          hotelRooms.map((room) => (
             <RoomContainer
               id={room.id}
               name={room.name}
