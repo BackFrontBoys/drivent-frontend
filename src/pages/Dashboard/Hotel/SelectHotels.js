@@ -9,6 +9,7 @@ export function SelectHotels({ setNeedBooking }) {
   const [list, setList] = useState([]);
   const [selectedHotelId, setSelectedHotelId] = useState(0); //pega o id do hotel selecionado
   const [renderRooms, setRenderRooms] = useState(false); //mudar para true so quando selecionar um hotel com id > 0
+  //const [update, setUpdate] = useState(false);
   const token = useToken();
 
   function selectHotel(id) {
@@ -25,6 +26,7 @@ export function SelectHotels({ setNeedBooking }) {
 
   useEffect(() => {
     listHotels();
+    //setUpdate(!update);
   }, [selectedHotelId]);
 
   return (
@@ -44,7 +46,7 @@ export function SelectHotels({ setNeedBooking }) {
           />
         ))}
       </ul>
-      {renderRooms ? <RoomsForm hotelId={selectedHotelId} setNeedBooking={setNeedBooking} /> : <></>}
+      {renderRooms ? <RoomsForm /* update={update} */ hotelId={selectedHotelId} setNeedBooking={setNeedBooking} /> : <></>}
     </Container>
   );
 }
