@@ -19,18 +19,15 @@ export default function RoomsForm({ update, hotelId, setNeedBooking }) {
   const { bookRoomLoading, bookRoom } = useBookRoom();
   const { booking } = useBooking();
   const token = useToken();
+  async function listRooms() {
+    const response = await getRooms(hotelId, token);
+    setHotelRooms(response.Rooms);
+  } 
 
   useEffect(() => {
     listRooms();
     setHotelRoomsLoading(false);
   }, [hotelId]);
-
-  console.log(hotelRooms);
-
-  async function listRooms() {
-    const response = await getRooms(hotelId, token);
-    setHotelRooms(response.Rooms);
-  } 
 
   let isDisabled = Boolean(bookRoomLoading);
 
@@ -72,9 +69,10 @@ export default function RoomsForm({ update, hotelId, setNeedBooking }) {
         {hotelRoomsLoading ? (
           <></>
         ) : (
-          hotelRooms.Rooms.map((room) => (
+          hotelRooms.map((room) => (
             <RoomContainer
               id={room.id}
+              key={room.id}
               name={room.name}
               capacity={room.capacity}
               booking={room.Booking}

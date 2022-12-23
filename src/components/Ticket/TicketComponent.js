@@ -86,6 +86,7 @@ export default function TicketComponent({ enrollment, getTicket }) {
               {data.map((i, index) =>
                 !i.isRemote && !i.includesHotel ? (
                   <div
+                    key={index}
                     className={online}
                     onClick={() => {
                       setShowTotal(false);
@@ -96,10 +97,11 @@ export default function TicketComponent({ enrollment, getTicket }) {
                       handleColor('online');
                     }}
                   >
-                    <h3>{i.name}</h3> <p>R$ {i.price.toString().slice(0, -2)}</p>
+                    <h3>{i.name}</h3> <p>R$ {i.price.toString()}</p>
                   </div>
                 ) : i.isRemote ? (
                   <div
+                    key={index}
                     className={presencial}
                     onClick={() => {
                       setTicketPrice(i.price);
@@ -110,7 +112,7 @@ export default function TicketComponent({ enrollment, getTicket }) {
                       handleColor('presencial');
                     }}
                   >
-                    <h3>{i.name}</h3> <p>R$ {i.price.toString().slice(0, -2)}</p>
+                    <h3>{i.name}</h3> <p>R$ {i.price.toString()}</p>
                   </div>
                 ) : (
                   ''
@@ -154,7 +156,7 @@ export default function TicketComponent({ enrollment, getTicket }) {
                     handleColor('withHotel');
                   }}
                 >
-                  <h3>Com Hotel</h3> <p>+ R$ {i.price.toString().slice(0, -2)}</p>
+                  <h3>Com Hotel</h3> <p>+ R$ {i.price.toString()}</p>
                 </div>
               ) : (
                 ''
@@ -169,7 +171,7 @@ export default function TicketComponent({ enrollment, getTicket }) {
       {showTotal ? (
         <BookTicket>
           <h5>
-            Fechado! O total ficou em <b style={{ fontWeight: 'bold' }}>R$ {ticketPrice.toString().slice(0, -2)}</b>. Agora é só confirmar:
+            Fechado! O total ficou em <b style={{ fontWeight: 'bold' }}>R$ {ticketPrice.toString()}</b>. Agora é só confirmar:
           </h5>
           <button onClick={() => postTicketType()}>RESERVAR INGRESSO</button>
         </BookTicket>
