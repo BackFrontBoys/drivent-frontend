@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
@@ -9,16 +9,32 @@ import StyledButton from '../StyledButton';
 import { toast } from 'react-toastify';
 import useBooking from '../../hooks/api/useBooking';
 import useUpdateBooking from '../../hooks/api/useUpdateBooking';
+import useToken from '../../hooks/useToken';
+import { getRooms } from '../../services/roomsApi';
 
-export default function RoomsForm({ hotelId, setNeedBooking }) {
-  const { hotelRooms, hotelRoomsLoading } = useHotelRooms(hotelId);
+export default function RoomsForm({ update, hotelId, setNeedBooking }) {
+  //const { hotelRooms, hotelRoomsLoading } = useHotelRooms(hotelId);
+  const [hotelRooms, setHotelRooms] = useState([]);
+  const [hotelRoomsLoading, setHotelRoomsLoading] = useState(true);
   const { bookRoomLoading, bookRoom } = useBookRoom();
-  const { bookingError, booking } = useBooking();
+  const { booking } = useBooking();
+  const token = useToken();
 
-  // console.log(hotelRoomsError);
+  useEffect(() => {
+    listRooms();
+    setHotelRoomsLoading(false);
+  }, [hotelId]);
+
+  console.log(hotelRooms);
+
+  async function listRooms() {
+    const response = await getRooms(hotelId, token);
+    setHotelRooms(response.Rooms);
+  } 
+
   let isDisabled = Boolean(bookRoomLoading);
 
-  if (bookingError) {
+  if (booking) {
     const { updateBookingLoading } = useUpdateBooking(booking.id);
     isDisabled = updateBookingLoading;
   }
@@ -35,10 +51,10 @@ export default function RoomsForm({ hotelId, setNeedBooking }) {
     };
 
     try {
-      if (bookingError) {
+      if (!booking) {
         await bookRoom(data);
         setNeedBooking(false);
-      } else if (!bookingError) {
+      } else if (booking) {
         await useUpdateBooking(booking.id).updateBooking(data);
         setNeedBooking(false);
       }
