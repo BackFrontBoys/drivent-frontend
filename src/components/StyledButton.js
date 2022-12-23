@@ -16,4 +16,5 @@ export default styled.button`
   font-size: 14px;
   text-align: center;
   color: #000000;
+  cursor: pointer;
 `;

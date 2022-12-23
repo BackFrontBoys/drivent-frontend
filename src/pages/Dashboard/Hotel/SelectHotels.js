@@ -31,37 +31,36 @@ export function SelectHotels({ setNeedBooking }) {
     <Container>
       <h1>Escolha de hotel e quarto</h1>
       <h4>Primeiro, escolha seu hotel</h4>
-      <ul className='hotelList'>
-        {list.map((item, index) => <CardHotels
-          key={index}
-          id={item.id}
-          image={item.image}
-          name={item.name}
-          Rooms={item.Rooms}
-          setSelectedHotelId={setSelectedHotelId}
-          selectHotel={selectHotel} />)}
+      <ul className="hotelList">
+        {list.map((item, index) => (
+          <CardHotels
+            key={index}
+            id={item.id}
+            image={item.image}
+            name={item.name}
+            Rooms={item.Rooms}
+            setSelectedHotelId={setSelectedHotelId}
+            selectHotel={selectHotel}
+          />
+        ))}
       </ul>
-      {renderRooms ?
-        (
-          <RoomsForm hotelId={selectedHotelId} setNeedBooking={setNeedBooking} />
-        ) : 
-        <></>}
+      {renderRooms ? <RoomsForm hotelId={selectedHotelId} setNeedBooking={setNeedBooking} /> : <></>}
     </Container>
   );
 }
 
 const Container = styled.div`
-    width: 100%;
+  width: 100%;
 
-    h1{
-        font-family: 'Roboto', sans-serif;
-        font-style: normal;
-        font-weight: 400;
-        font-size: 34px;
-        line-height: 40px;
-        color: #000000;
-    }
-    h4{
+  h1 {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 34px;
+    line-height: 40px;
+    color: #000000;
+  }
+  h4 {
     margin-top: 36px;
     margin-bottom: 18px;
 
@@ -69,15 +68,14 @@ const Container = styled.div`
     font-weight: 400;
     font-size: 20px;
     line-height: 23px;
-    color: #8E8E8E;
+    color: #8e8e8e;
   }
 
-  .hotelList{
+  .hotelList {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
-
   }
 `;

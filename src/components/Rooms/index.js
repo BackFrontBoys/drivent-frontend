@@ -11,13 +11,14 @@ import useBooking from '../../hooks/api/useBooking';
 import useUpdateBooking from '../../hooks/api/useUpdateBooking';
 
 export default function RoomsForm({ hotelId, setNeedBooking }) {
-  const { hotelRooms } = useHotelRooms(hotelId);
+  const { hotelRooms, hotelRoomsLoading } = useHotelRooms(hotelId);
   const { bookRoomLoading, bookRoom } = useBookRoom();
   const { bookingError, booking } = useBooking();
 
+  // console.log(hotelRoomsError);
   let isDisabled = Boolean(bookRoomLoading);
 
-  if (!bookingError) {
+  if (bookingError) {
     const { updateBookingLoading } = useUpdateBooking(booking.id);
     isDisabled = updateBookingLoading;
   }
@@ -30,7 +31,7 @@ export default function RoomsForm({ hotelId, setNeedBooking }) {
     }
 
     const data = {
-      roomId: id
+      roomId: id,
     };
 
     try {
@@ -52,26 +53,37 @@ export default function RoomsForm({ hotelId, setNeedBooking }) {
       <RoomsHeader variant="h6">Ótima pedida! Agora escolha seu quarto:</RoomsHeader>
 
       <RoomsContainer>
-
-        {
-          hotelRooms.Rooms.map(room => (
-            <RoomContainer id={room.id} name={room.name}
-              capacity={room.capacity} booking={room.Booking}
-              isSelected={(room.id === selected)} setSelected={setSelected} />
+        {hotelRoomsLoading ? (
+          <></>
+        ) : (
+          hotelRooms.Rooms.map((room) => (
+            <RoomContainer
+              id={room.id}
+              name={room.name}
+              capacity={room.capacity}
+              booking={room.Booking}
+              isSelected={room.id === selected}
+              setSelected={setSelected}
+            />
           ))
-        }
-
+        )}
       </RoomsContainer>
 
-      <StyledButton onClick={() => { handleBookRoom(selected); }}
-        disabled={isDisabled}>RESERVAR QUARTO</StyledButton>
-
-    </>);
+      <StyledButton
+        onClick={() => {
+          handleBookRoom(selected);
+        }}
+        disabled={isDisabled}
+      >
+        RESERVAR QUARTO
+      </StyledButton>
+    </>
+  );
 }
 
 const RoomsHeader = styled(Typography)`
-  margin-bottom: 20px!important;
-  color: #8E8E8E;
+  margin-bottom: 20px !important;
+  color: #8e8e8e;
 `;
 
 const RoomsContainer = styled.div`

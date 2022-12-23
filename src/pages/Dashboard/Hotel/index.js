@@ -24,7 +24,7 @@ export default function Hotel() {
         return;
       } else {
         return setIsValid(true);
-      };
+      }
     } catch (error) {
       setMessage('Erro em obter informações de pagamento');
       setIsValid(false);
@@ -37,15 +37,15 @@ export default function Hotel() {
 
   return (
     <>
-      {isValid ?
-        (
-          needBooking ?
-            <SelectHotels setNeedBooking={setNeedBooking} />
-            :
-            <BookedRoom booking={booking} setNeedBooking={setNeedBooking} />
+      {isValid ? (
+        needBooking ? (
+          <BookedRoom booking={booking} setNeedBooking={setNeedBooking} />
+        ) : (
+          <SelectHotels setNeedBooking={setNeedBooking} />
         )
-        :
-        <Warning>{message}</Warning>}
-    </>);
+      ) : (
+        <Warning>{message}</Warning>
+      )}
+    </>
+  );
 }
-
