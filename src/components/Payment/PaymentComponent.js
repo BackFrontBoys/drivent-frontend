@@ -111,8 +111,7 @@ export default function PaymentComponent({ enrollment, ticket, getTicket }) {
               <Info variant="subtitle1">{renderTicketInfo()}</Info>
               <Info variant="subtitle1" color="textSecondary">
                 R$ {ticketPrice()
-                  .toString()
-                  .slice(0, -2)}
+                  .toString()}
               </Info>
             </TicketWrapper>
 

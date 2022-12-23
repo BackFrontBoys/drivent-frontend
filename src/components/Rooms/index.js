@@ -71,6 +71,7 @@ export default function RoomsForm({ hotelId, setNeedBooking, needUpdate, setNeed
           hotelRooms.map((room) => (
             <RoomContainer
               id={room.id}
+              key={room.id}
               name={room.name}
               capacity={room.capacity}
               booking={room.Booking}

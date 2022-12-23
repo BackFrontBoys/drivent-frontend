@@ -8,7 +8,7 @@ import RoomsForm from '../../../components/Rooms';
 export function SelectHotels({ setNeedBooking, needUpdate, setNeedUpdate }) {
   const [list, setList] = useState([]);
   const [selectedHotelId, setSelectedHotelId] = useState(0); //pega o id do hotel selecionado
-  const [renderRooms, setRenderRooms] = useState(false); //mudar para true so quando selecionar um hotel com id > 0
+  const [renderRooms, setRenderRooms] = useState(false); 
   const token = useToken();
 
   function selectHotel(id) {
@@ -39,8 +39,8 @@ export function SelectHotels({ setNeedBooking, needUpdate, setNeedUpdate }) {
             image={item.image}
             name={item.name}
             Rooms={item.Rooms}
-            setSelectedHotelId={setSelectedHotelId}
             selectHotel={selectHotel}
+            selectedHotelId={selectedHotelId}
           />
         ))}
       </ul>

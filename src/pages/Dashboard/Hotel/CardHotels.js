@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-export function CardHotels({ image, name, id, Rooms, selectHotel }) {
+export function CardHotels({ image, name, id, Rooms, selectedHotelId, selectHotel }) {
   const [text, setText] = useState('');
   const [free, setfree] = useState(0);
+  const [selected, setSelected]= useState(false);
 
   function defineText(Rooms) {
     let options = {
@@ -54,10 +55,17 @@ export function CardHotels({ image, name, id, Rooms, selectHotel }) {
 
   useEffect(() => {
     defineText(Rooms);
-  }, []);
+    if(selectedHotelId === id) {
+      setSelected(true);
+    }else{
+      setSelected(false);
+    }
+  }, [selectedHotelId]);
 
   return(
-    <Container onClick={() => {selectHotel(id);}}>
+    <Container 
+      selected={selected}
+      onClick={() => {selectHotel(id);}}>
       <img src={image} alt='hotel'/>
       <h5>{name}</h5>
       <Information>
@@ -77,7 +85,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    background: #EBEBEB;
+    background: ${props => (props.selected ? '#FFEED2' : '#EBEBEB')};
     border-radius: 10px;
     padding: 16px 14px; 
     margin-right: 19px;
