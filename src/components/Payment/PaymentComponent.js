@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/es/styles-compiled.css';
 import Button from '../../components/Form/Button';
@@ -8,6 +8,7 @@ import useSavePayment from '../../hooks/api/useSavePayment';
 import { toast } from 'react-toastify';
 import { IconContext } from 'react-icons';
 import { IoCheckmarkCircleSharp } from 'react-icons/io5';
+import useTicketType from '../../hooks/api/useTicketType';
 
 export default function PaymentComponent({ enrollment, ticket, getTicket }) {
   const { savePayment } = useSavePayment();
@@ -16,18 +17,44 @@ export default function PaymentComponent({ enrollment, ticket, getTicket }) {
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState('');
-  const totalPrice = JSON.parse(localStorage.getItem('price') || '0');  
+  const { ticketTypes } = useTicketType();
+  const [totalPrice, setTotalPrice] = useState(0);
 
-  function renderTicketInfo() {
+  useEffect(async() => {
+    try {
+      const priceTicket = await ticketTypes
+        .filter(value => value.isRemote === false && value.includesHotel === false)
+        .map(value => value.price);     
+
+      setTotalPrice(priceTicket[0]);
+    } catch (error) {
+      // eslint-disable-next-line
+      console.log(error.message);
+    }   
+  }, [ticketTypes]);
+
+  function renderTicketInfo() {    
     if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === false) {
       return 'Presencial + Sem Hotel';
     }
 
-    if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === true) {
+    if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === true) {   
       return 'Presencial + Com Hotel';
     }
 
     return 'Online';
+  }
+
+  function ticketPrice() {
+    if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === false) {
+      return ticket?.TicketType.price;
+    }
+
+    if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === true) {      
+      return ticket?.TicketType.price + totalPrice;    
+    }
+
+    return ticket?.TicketType.price;
   }
 
   async function handleSubmit(e) {
@@ -83,7 +110,7 @@ export default function PaymentComponent({ enrollment, ticket, getTicket }) {
             <TicketWrapper>
               <Info variant="subtitle1">{renderTicketInfo()}</Info>
               <Info variant="subtitle1" color="textSecondary">
-                R$ {totalPrice
+                R$ {ticketPrice()
                   .toString()
                   .slice(0, -2)}
               </Info>

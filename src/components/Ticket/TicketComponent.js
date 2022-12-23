@@ -35,7 +35,6 @@ export default function TicketComponent({ enrollment, getTicket }) {
       const insertTicket = await postTicket(ticketTypeId, token);
 
       if (insertTicket) {
-        localStorage.setItem('price', JSON.stringify(ticketPrice));
         getTicket();
         toast('Ingresso reservado com sucesso!');
       }
