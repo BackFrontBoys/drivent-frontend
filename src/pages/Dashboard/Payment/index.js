@@ -6,7 +6,7 @@ import useTicket from '../../../hooks/api/useTicket';
 export default function Payment() {
   const { enrollment } = useEnrollment();
   const { ticket, getTicket } = useTicket();
-  
+
   return (
     <>
       {!ticket ? 
