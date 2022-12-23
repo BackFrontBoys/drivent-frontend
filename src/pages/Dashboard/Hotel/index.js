@@ -9,9 +9,11 @@ import useBooking from '../../../hooks/api/useBooking';
 export default function Hotel() {
   const [isValid, setIsValid] = useState(false);
   const [message, setMessage] = useState('');
-  const { bookingError, booking } = useBooking();
-  const [needBooking, setNeedBooking] = useState(Boolean(bookingError));
+  const { bookingLoading, bookingError, booking } = useBooking();
+  const [needBooking, setNeedBooking] = useState(Boolean(!bookingError));
+  const [needUpdate, setNeedUpdate] = useState(Boolean(booking));
   const token = useToken();
+
   async function hotel() {
     try {
       const ticket = await getTickets(token);
@@ -33,15 +35,16 @@ export default function Hotel() {
 
   useEffect(() => {
     hotel();
-  }, [needBooking]);
+    setNeedBooking(!Boolean(booking));
+  }, [booking]);
 
   return (
     <>
       {isValid ? (
         needBooking ? (
-          <BookedRoom booking={booking} setNeedBooking={setNeedBooking} />
-        ) : (
-          <SelectHotels setNeedBooking={setNeedBooking} />
+          <SelectHotels setNeedBooking={setNeedBooking} needUpdate={needUpdate} setNeedUpdate={setNeedUpdate} />
+        ) : (bookingLoading ? <></> :
+          (<BookedRoom setNeedBooking={setNeedBooking} setNeedUpdate={setNeedUpdate} />)
         )
       ) : (
         <Warning>{message}</Warning>
