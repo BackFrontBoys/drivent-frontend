@@ -16,7 +16,7 @@ export default function PaymentComponent({ enrollment, ticket, getTicket }) {
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState('');
-  const totalPrice = JSON.parse(localStorage.getItem('price'));   
+  const totalPrice = JSON.parse(localStorage.getItem('price') || '0');  
 
   function renderTicketInfo() {
     if (ticket?.TicketType.isRemote === false && ticket?.TicketType.includesHotel === false) {
