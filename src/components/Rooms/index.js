@@ -29,8 +29,6 @@ export default function RoomsForm({ update, hotelId, setNeedBooking }) {
     setHotelRoomsLoading(false);
   }, [hotelId]);
 
-  console.log(hotelRooms);
-
   let isDisabled = Boolean(bookRoomLoading);
 
   if (booking) {
