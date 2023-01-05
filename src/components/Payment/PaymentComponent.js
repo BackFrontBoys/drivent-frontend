@@ -97,8 +97,8 @@ export default function PaymentComponent({ enrollment, ticket, getTicket }) {
       {!enrollment ? 
         (
           <Enroll>
-            <Info variant="h6" color="textSecondary">Você precisa completar sua inscrição antes</Info>
-            <Info variant="h6" color="textSecondary">de prosseguir pra escolha de ingresso</Info>
+            <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>Você precisa completar sua inscrição antes</Info>
+            <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>de prosseguir pra escolha de ingresso</Info>
           </Enroll>
           
         ) 

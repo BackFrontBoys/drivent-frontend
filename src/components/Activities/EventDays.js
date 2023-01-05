@@ -1,8 +1,19 @@
-import styled from 'styled-components';
-import MuiButton from '@material-ui/core/Button';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Button } from '@mui/material';
 
-export default function EventDays({ date }) {  
-  function dateConverse() {
+export default function EventDays({ id, date, isSelected, setSelected }) {
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#E0E0E0'
+      },
+      secondary: {
+        main: '#FFD37D'
+      }
+    }
+  });
+  
+  function dateConversion() {
     const newDate = new Date(date);
     const month = newDate.toLocaleDateString().slice(0, -5);
     let weekday = '';
@@ -35,13 +46,17 @@ export default function EventDays({ date }) {
   }
 
   return (
-    <>
-      <Button variant='contained' style={{ textTransform: 'none', fontWeight: 400  }}>{dateConverse()}</Button>
-    </>
+    <ThemeProvider theme={theme}>
+      <Button 
+        variant='contained' 
+        color={isSelected ? 'secondary' : 'primary'} 
+        style={{ 
+          textTransform: 'none', 
+          fontWeight: 400, 
+          marginRight: 10,
+          border: 'none'
+        }} 
+        onClick={() => setSelected(id)}>{dateConversion()}</Button>
+    </ThemeProvider>
   );
 }
-
-const Button = styled(MuiButton)`
-  margin-top: 8px !important;
-  margin-right: 10px !important;
-`;
