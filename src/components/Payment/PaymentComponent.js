@@ -105,7 +105,7 @@ export default function PaymentComponent({ enrollment, ticket, getTicket }) {
         : 
         (
           <>
-            <SubTitle variant="h6" color="textSecondary">Ingresso escolhido</SubTitle>
+            <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20 }}>Ingresso escolhido</SubTitle>
 
             <TicketWrapper>
               <Info variant="subtitle1">{renderTicketInfo()}</Info>
@@ -115,7 +115,7 @@ export default function PaymentComponent({ enrollment, ticket, getTicket }) {
               </Info>
             </TicketWrapper>
 
-            <SubTitle variant="h6" color="textSecondary">Pagamento</SubTitle>
+            <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20 }}>Pagamento</SubTitle>
 
             {ticket?.status === 'RESERVED' ?
               (
