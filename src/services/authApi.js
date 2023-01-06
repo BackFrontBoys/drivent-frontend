@@ -6,7 +6,6 @@ export async function signIn(email, password) {
 }
 
 export async function gitSignIn(code) {
-  console.log(code);
   const response = await api.post(`/auth/sign-in/github?code=${code}`);
   
   return response.data;
