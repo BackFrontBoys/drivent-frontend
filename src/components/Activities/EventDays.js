@@ -15,7 +15,7 @@ export default function EventDays({ id, date, isSelected, setSelected }) {
   
   function dateConversion() {
     const newDate = new Date(date);
-    const month = newDate.toLocaleDateString().slice(0, -5);
+    const month = newDate.toLocaleDateString('pt-br').slice(0, -5);
     let weekday = '';
 
     switch (newDate.getDay()) {
