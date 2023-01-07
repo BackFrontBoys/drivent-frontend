@@ -1,7 +1,7 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Button } from '@mui/material';
 
-export default function EventDays({ id, date, isSelected, setSelected }) {
+export default function EventDays({ id, date, isSelected, setSelected, setEventDaysId }) {
   const theme = createTheme({
     palette: {
       primary: {
@@ -54,9 +54,10 @@ export default function EventDays({ id, date, isSelected, setSelected }) {
           textTransform: 'none', 
           fontWeight: 400, 
           marginRight: 10,
+          marginBottom: 10,
           border: 'none'
         }} 
-        onClick={() => setSelected(id)}>{dateConversion()}</Button>
+        onClick={() => {setEventDaysId(id); setSelected(id); }}> {dateConversion()}</Button>
     </ThemeProvider>
   );
 }
