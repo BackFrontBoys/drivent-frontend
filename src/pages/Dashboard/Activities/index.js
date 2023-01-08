@@ -7,7 +7,6 @@ import { useState } from 'react';
 export default function Activities() {
   const [eventDaysId, setEventDaysId] = useState(null);
 
-  console.log(eventDaysId);
   return (
     <>
       <StyledTypography variant="h4">Escolha de atividades</StyledTypography>

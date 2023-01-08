@@ -8,7 +8,7 @@ import { useState } from 'react';
 export default function EventsPanel({ setEventDaysId, eventDaysId }) {
   const token = useToken();
   const [eventData, setEventData] = useState();
-  console.log(eventDaysId);
+  //console.log(eventDaysId);
 
   async function getDayEvents() {
     try {
@@ -29,7 +29,7 @@ export default function EventsPanel({ setEventDaysId, eventDaysId }) {
 
   if(!eventData) return '';
 
-  console.log(eventData);
+  //console.log(eventData);
 
   return(
     <Main>
@@ -38,7 +38,7 @@ export default function EventsPanel({ setEventDaysId, eventDaysId }) {
           <h2 key={index}>{i.name}</h2>
           <EventsContainer>
             {i.Activities.map((item, index) => 
-              (<aside>
+              (<aside key={index}>
                 <div>
                   <h3>{item.name}</h3>
                   <p>{item.startTime} - {item.endTime}</p>
