@@ -8,7 +8,7 @@ import { getEventDays } from '../../services/activityApi';
 import EventDays from '../Activities/EventDays';
 import { getTickets } from '../../services/ticketApi';
 
-export default function EventDaysContainer() {
+export default function EventDaysContainer({ setEventDaysId }) {
   const [data, setData] = useState([]);
   const [ticket, setTicket] = useState();
   const [selected, setSelected] = useState(null);
@@ -22,15 +22,15 @@ export default function EventDaysContainer() {
       setTicket(ticketUser);
       setData(days);
     } catch (error) {
-      if(error.response.status === 400) {
+      if (error.response.status === 400) {
         return toast('Você ainda não possui um ticket.');
-      }      
+      }
       return toast('Desculpe, houve um erro.');
     }
   }
 
   function subTitleDisplayNone() {
-    if(!selected) {
+    if (!selected) {
       return '';
     }
     return 'none';
@@ -42,40 +42,48 @@ export default function EventDaysContainer() {
 
   return (
     <>
-      {
-        ticket?.status === 'RESERVED' ? 
-          (
-            <Ticket>
-              <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>Você precisa ter confirmado pagamento antes
-              </Info>
-              <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>de fazer a escolha de atividades</Info>
-            </Ticket>
-          ) 
-          : 
-          ticket?.TicketType.isRemote ? 
-            (
-              <Ticket>
-                <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>Sua modalidade de ingresso não necessita escolher
-                </Info>
-                <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>atividade. Você terá acesso a todas as atividades.</Info>
-              </Ticket>
-            ) 
-            : 
-            (
-              <>
-                <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20, display: subTitleDisplayNone() }}>Primeiro, filtre pelo dia do evento:</SubTitle>
-      
-                {data.map((value, index) => (
-                  <EventDays key={index} id={value.id} date={value.date} isSelected={value.id === selected} setSelected={setSelected}/>
-                ))}
-              </>
-            )}  
+      {ticket?.status === 'RESERVED' ? (
+        <Ticket>
+          <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>
+            Você precisa ter confirmado pagamento antes
+          </Info>
+          <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>
+            de fazer a escolha de atividades
+          </Info>
+        </Ticket>
+      ) : ticket?.TicketType.isRemote ? (
+        <Ticket>
+          <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>
+            Sua modalidade de ingresso não necessita escolher
+          </Info>
+          <Info variant="h6" color="textSecondary" style={{ fontWeight: 400 }}>
+            atividade. Você terá acesso a todas as atividades.
+          </Info>
+        </Ticket>
+      ) : (
+        <>
+          <SubTitle variant="body1" color="textSecondary" style={{ fontSize: 20, display: subTitleDisplayNone() }}>
+            Primeiro, filtre pelo dia do evento:
+          </SubTitle>
+
+          {data.map((value, index) => (
+            <EventDays
+              key={index}
+              id={value.id}
+              date={value.date}
+              isSelected={value.id === selected}
+              setSelected={setSelected}
+              setEventDaysId={setEventDaysId}
+            />
+          ))}
+        </>
+      )}
     </>
   );
 }
 
 const SubTitle = styled(Typography)`
-  margin-bottom: 20px!important;
+  margin-bottom: 20px !important;
 `;
 
 const Ticket = styled.div`
@@ -87,6 +95,4 @@ const Ticket = styled.div`
   height: 70%;
 `;
 
-const Info = styled(Typography)`
-`;
-
+const Info = styled(Typography)``;
