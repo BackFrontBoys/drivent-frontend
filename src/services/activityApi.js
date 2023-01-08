@@ -17,3 +17,12 @@ export async function getEvents(token, eventDayId) {
   });
   return response.data;
 }
+
+export async function postActivityBooking( token, activityId ) {
+  const response = await api.post('/activitiesBooking', { activityId },  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }); 
+  return response.data;
+}
