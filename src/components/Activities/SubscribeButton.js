@@ -45,7 +45,7 @@ const Container = styled.div`
 `;
 
 const Spots = styled.p`  
-  font-size: 10px;
+  font-size: 9px;
   color: ${props => (props.color ? '#43a047' : '#e93535')};
 
   font-family: 'Roboto', sans-serif;
