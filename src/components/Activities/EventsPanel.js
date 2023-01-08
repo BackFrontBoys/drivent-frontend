@@ -46,7 +46,9 @@ export default function EventsPanel({ eventDaysId }) {
                 </div>
                 
                 <header key={index}>
-                  <SubscribeButton />
+                  <SubscribeButton
+                    availableSpots={item.maxQuantity}
+                    activityId={item.id} />
                 </header>
               </aside>)
             )}
