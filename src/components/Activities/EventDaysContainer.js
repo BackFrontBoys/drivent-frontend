@@ -40,6 +40,8 @@ export default function EventDaysContainer({ setEventDaysId }) {
     getEventDaysFunc();
   }, [selected]);
 
+  if(!ticket) return '';
+
   return (
     <>
       {ticket?.status === 'RESERVED' ? (

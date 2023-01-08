@@ -12,7 +12,7 @@ export default function Activities() {
       <StyledTypography variant="h4">Escolha de atividades</StyledTypography>
 
       <EventDaysContainer setEventDaysId={setEventDaysId} />
-      <EventsPanel setEventDaysId={setEventDaysId} eventDaysId={eventDaysId}/>
+      <EventsPanel eventDaysId={eventDaysId}/>
     </>
   );
 }
