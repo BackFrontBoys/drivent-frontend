@@ -4,8 +4,9 @@ import { toast } from 'react-toastify';
 import { getEvents } from '../../services/activityApi';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import SubscribeButton from './SubscribeButton';
 
-export default function EventsPanel({ setEventDaysId, eventDaysId }) {
+export default function EventsPanel({ eventDaysId }) {
   const token = useToken();
   const [eventData, setEventData] = useState();
   console.log(eventDaysId);
@@ -45,8 +46,7 @@ export default function EventsPanel({ setEventDaysId, eventDaysId }) {
                 </div>
                 
                 <header key={index}>
-                  <h4>{item.maxQuantity} vagas</h4>
-                  <h6>Icon here</h6>
+                  <SubscribeButton />
                 </header>
               </aside>)
             )}
@@ -137,7 +137,7 @@ const EventsContainer = styled.nav`
         flex-wrap: wrap;
         word-break: break-all;
         border-left: 1px solid #CFCFCF;
-        width: 66px;
+        width: 70px;
         height: 90%;
         padding-left: 15px;
         text-align: center;
