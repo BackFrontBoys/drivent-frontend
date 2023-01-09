@@ -51,7 +51,7 @@ export default function EventsPanel({ eventDaysId }) {
           <h2 key={index}>{i.name}</h2>
           <EventsContainer>
             {i.Activities.map((item, index) => 
-              (<aside key={index}>
+              (<Aside key={index} backgroundColor={isSubscribed(item.ActivitiesBooking)}>
                 <div>
                   <h3>{item.name}</h3>
                   <p>{item.startTime} - {item.endTime}</p>
@@ -63,7 +63,7 @@ export default function EventsPanel({ eventDaysId }) {
                     availableSpots={item.maxQuantity-item.ActivitiesBooking.length}
                     activityId={item.id} />
                 </header>
-              </aside>)
+              </Aside>)
             )}
           </EventsContainer>
           
@@ -133,11 +133,12 @@ const EventsContainer = styled.nav`
     ::-webkit-scrollbar-thumb:hover {
       background:#e6e3e3;
     }
- 
-    aside{
+`;
+
+const Aside = styled.div`
      width: 265px;
      min-height: 79px;
-     background-color: #F1F1F1; // AQUI VAI MUDAR A COR DO BOTÃO PRA VERDE QUANDO INSCRITO
+     background-color: ${props => (props.backgroundColor ? '#D0FFDB' : '#F1F1F1')} !important; // AQUI VAI MUDAR A COR DO BOTÃO PRA VERDE QUANDO INSCRITO
      border-radius: 5px;
      padding-top: 10px;
      padding-left: 12px;
@@ -200,7 +201,4 @@ const EventsContainer = styled.nav`
         }
 
      }
-
-    }
 `;
-
