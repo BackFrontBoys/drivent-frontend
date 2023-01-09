@@ -43,7 +43,7 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
                 (
                   <span onClick={() => { subscribeActivity(); }} disabled={isDisabled}>
                     <LoginOutlinedIcon sx={{ fontSize: 30, color: green[600] }} />
-                    <Spots color={availableSpots}>{availableSpots} vagas</Spots>
+                    <Spots color={availableSpots}>{availableSpots} vaga{availableSpots>1 ? 's' : ''}</Spots>
                   </span>
                 )
                 :
