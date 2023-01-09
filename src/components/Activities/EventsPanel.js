@@ -12,7 +12,6 @@ export default function EventsPanel({ eventDaysId }) {
   const [eventData, setEventData] = useState();
   const [update, setUpdate] = useState(false);
   const { userData } = useContext(UserContext);
-  //console.log(eventDaysId);
 
   async function getDayEvents() {
     try {
@@ -49,8 +48,6 @@ export default function EventsPanel({ eventDaysId }) {
 
     return ((endNumber - startNumber)* 80);
   }
-
-  //console.log(eventData);
 
   return(
     <Main>
