@@ -6,20 +6,25 @@ import { toast } from 'react-toastify';
 import { green, red } from '@mui/material/colors';
 import useToken from '../../hooks/useToken';
 import { postActivityBooking } from '../../services/activityApi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function SubscribeButton({ isSubscribed, availableSpots, activityId }) {
+export default function SubscribeButton({ isSubscribed, availableSpots, activityId, update, setUpdate }) {
   const token = useToken();
   const [subscribe, setSubscribe] = useState(isSubscribed);
-  const [isDisabled, setIsDisabled] = useState(false); 
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  useEffect(async() => {
+    setSubscribe(isSubscribed);
+  }, [isSubscribed]);
 
   async function subscribeActivity() {
-    if(isDisabled) {
+    if (isDisabled) {
       return;
     }
     setIsDisabled(true);
     try {
       await postActivityBooking(token, activityId);
+      setUpdate(!update);
       setSubscribe(true);
       toast('Inscrição realizada com sucesso');
       setIsDisabled(false);
@@ -32,27 +37,27 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
     <>
       <Container>
         {
-          availableSpots ?
+          !subscribe ?
             (
-              !subscribe ?
+              availableSpots ?
                 (
-                  <span onClick={() => {subscribeActivity();}} disabled={isDisabled}>
+                  <span onClick={() => { subscribeActivity(); }} disabled={isDisabled}>
                     <LoginOutlinedIcon sx={{ fontSize: 30, color: green[600] }} />
-                    <Spots color={availableSpots}>{availableSpots} vagas</Spots>
+                    <Spots color={availableSpots}>{availableSpots} vaga{availableSpots>1 ? 's' : ''}</Spots>
                   </span>
                 )
                 :
                 (
                   <>
-                    <CheckCircleOutlinedIcon sx={{ fontSize: 30, color: green[600] }}/>
-                    <Spots color={availableSpots}>Inscrito</Spots>
+                    <HighlightOffRoundedIcon sx={{ fontSize: 30, color: red[600] }} />
+                    <Spots color={availableSpots}>Esgotado</Spots>
                   </>
                 )
             )
             :
             <>
-              <HighlightOffRoundedIcon sx={{ fontSize: 30, color: red[600] }} />
-              <Spots color={availableSpots}>Esgotado</Spots>
+              <CheckCircleOutlinedIcon sx={{ fontSize: 30, color: green[600] }} />
+              <Spots color={true}>Inscrito</Spots>
             </>
         }
       </Container>
@@ -60,6 +65,7 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
 }
 
 const Container = styled.div`
+  width: 100% !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,8 +76,8 @@ const Container = styled.div`
 `;
 
 const Spots = styled.p`  
-  font-size: 9px;
-  color: ${props => (props.color ? '#43a047' : '#e93535')};
+  font-size: 10px !important;
+  color: ${props => (props.color ? '#43a047' : '#e93535')} !important;
 
   font-family: 'Roboto', sans-serif;
 `;

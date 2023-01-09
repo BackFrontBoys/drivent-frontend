@@ -2,13 +2,16 @@ import styled from 'styled-components';
 import useToken from '../../hooks/useToken';
 import { toast } from 'react-toastify';
 import { getEvents } from '../../services/activityApi';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useState } from 'react';
 import SubscribeButton from './SubscribeButton';
+import UserContext from '../../contexts/UserContext';
 
 export default function EventsPanel({ eventDaysId }) {
   const token = useToken();
   const [eventData, setEventData] = useState();
+  const [update, setUpdate] = useState(false);
+  const { userData } = useContext(UserContext);
   //console.log(eventDaysId);
 
   async function getDayEvents() {
@@ -26,9 +29,26 @@ export default function EventsPanel({ eventDaysId }) {
     }else {
       getDayEvents();
     }
-  }, [eventDaysId]);
+  }, [eventDaysId, update]);
 
   if(!eventData) return '';
+
+  function isSubscribed(bookingArray) {
+    for (let i = 0; i < bookingArray.length; i++) {
+      if (bookingArray[i].userId === userData.user.id) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function getBoxSize(startTime, endTime) {
+    const startNumber = Number(startTime.slice(0, 2));
+    const endNumber = Number(endTime.slice(0, 2));
+
+    return ((endNumber - startNumber)* 80);
+  }
 
   //console.log(eventData);
 
@@ -39,7 +59,7 @@ export default function EventsPanel({ eventDaysId }) {
           <h2 key={index}>{i.name}</h2>
           <EventsContainer>
             {i.Activities.map((item, index) => 
-              (<aside key={index}>
+              (<Aside key={index} backgroundColor={isSubscribed(item.ActivitiesBooking)} boxSize={getBoxSize(item.startTime, item.endTime)}>
                 <div>
                   <h3>{item.name}</h3>
                   <p>{item.startTime} - {item.endTime}</p>
@@ -47,10 +67,13 @@ export default function EventsPanel({ eventDaysId }) {
                 
                 <header key={index}>
                   <SubscribeButton
-                    availableSpots={item.maxQuantity}
-                    activityId={item.id} />
+                    isSubscribed={isSubscribed(item.ActivitiesBooking)}
+                    availableSpots={item.maxQuantity-item.ActivitiesBooking.length}
+                    activityId={item.id}
+                    update={update}
+                    setUpdate={setUpdate} />
                 </header>
-              </aside>)
+              </Aside>)
             )}
           </EventsContainer>
           
@@ -120,11 +143,12 @@ const EventsContainer = styled.nav`
     ::-webkit-scrollbar-thumb:hover {
       background:#e6e3e3;
     }
- 
-    aside{
+`;
+
+const Aside = styled.div`
      width: 265px;
-     min-height: 79px;
-     background-color: #F1F1F1; // AQUI VAI MUDAR A COR DO BOTÃO PRA VERDE QUANDO INSCRITO
+     min-height: ${props => (props.boxSize)}px;
+     background-color: ${props => (props.backgroundColor ? '#D0FFDB' : '#F1F1F1')} !important; // AQUI VAI MUDAR A COR DO BOTÃO PRA VERDE QUANDO INSCRITO
      border-radius: 5px;
      padding-top: 10px;
      padding-left: 12px;
@@ -168,22 +192,23 @@ const EventsContainer = styled.nav`
         flex-direction: column;
         padding-top: 2px;
         gap: 5px;
+        width: 65%;
 
         h3{
          color: #343434;
          font-family: 'Roboto', sans-serif;
          font-weight: 700;
          font-size: 12px;
+         line-break: strict;
+         word-break: break-word;
         }
         p{
          color: #343434;
          font-family: 'Roboto', sans-serif;
          font-weight: 400;
          font-size: 12px; 
+         word-break: break-word;
         }
 
      }
-
-    }
 `;
-
