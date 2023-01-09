@@ -2,13 +2,15 @@ import styled from 'styled-components';
 import useToken from '../../hooks/useToken';
 import { toast } from 'react-toastify';
 import { getEvents } from '../../services/activityApi';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useState } from 'react';
 import SubscribeButton from './SubscribeButton';
+import UserContext from '../../contexts/UserContext';
 
 export default function EventsPanel({ eventDaysId }) {
   const token = useToken();
   const [eventData, setEventData] = useState();
+  const { userData } = useContext(UserContext);
   //console.log(eventDaysId);
 
   async function getDayEvents() {
@@ -30,6 +32,16 @@ export default function EventsPanel({ eventDaysId }) {
 
   if(!eventData) return '';
 
+  function isSubscribed(bookingArray) {
+    for (let i = 0; i < bookingArray.length; i++) {
+      if (bookingArray[i].userId === userData.user.id) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   //console.log(eventData);
 
   return(
@@ -47,7 +59,8 @@ export default function EventsPanel({ eventDaysId }) {
                 
                 <header key={index}>
                   <SubscribeButton
-                    availableSpots={item.maxQuantity}
+                    isSubscribed={isSubscribed(item.ActivitiesBooking)}
+                    availableSpots={item.maxQuantity-item.ActivitiesBooking.length}
                     activityId={item.id} />
                 </header>
               </aside>)
@@ -168,18 +181,22 @@ const EventsContainer = styled.nav`
         flex-direction: column;
         padding-top: 2px;
         gap: 5px;
+        width: 65%;
 
         h3{
          color: #343434;
          font-family: 'Roboto', sans-serif;
          font-weight: 700;
          font-size: 12px;
+         line-break: strict;
+         word-break: break-word;
         }
         p{
          color: #343434;
          font-family: 'Roboto', sans-serif;
          font-weight: 400;
          font-size: 12px; 
+         word-break: break-word;
         }
 
      }

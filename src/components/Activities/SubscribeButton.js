@@ -60,6 +60,7 @@ export default function SubscribeButton({ isSubscribed, availableSpots, activity
 }
 
 const Container = styled.div`
+  width: 100% !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,8 +71,8 @@ const Container = styled.div`
 `;
 
 const Spots = styled.p`  
-  font-size: 9px;
-  color: ${props => (props.color ? '#43a047' : '#e93535')};
+  font-size: 10px !important;
+  color: ${props => (props.color ? '#43a047' : '#e93535')} !important;
 
   font-family: 'Roboto', sans-serif;
 `;
