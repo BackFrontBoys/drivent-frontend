@@ -10,6 +10,7 @@ import UserContext from '../../contexts/UserContext';
 export default function EventsPanel({ eventDaysId }) {
   const token = useToken();
   const [eventData, setEventData] = useState();
+  const [update, setUpdate] = useState(false);
   const { userData } = useContext(UserContext);
   //console.log(eventDaysId);
 
@@ -28,7 +29,7 @@ export default function EventsPanel({ eventDaysId }) {
     }else {
       getDayEvents();
     }
-  }, [eventDaysId]);
+  }, [eventDaysId, update]);
 
   if(!eventData) return '';
 
@@ -42,6 +43,13 @@ export default function EventsPanel({ eventDaysId }) {
     return false;
   }
 
+  function getBoxSize(startTime, endTime) {
+    const startNumber = Number(startTime.slice(0, 2));
+    const endNumber = Number(endTime.slice(0, 2));
+
+    return ((endNumber - startNumber)* 80);
+  }
+
   //console.log(eventData);
 
   return(
@@ -51,7 +59,7 @@ export default function EventsPanel({ eventDaysId }) {
           <h2 key={index}>{i.name}</h2>
           <EventsContainer>
             {i.Activities.map((item, index) => 
-              (<Aside key={index} backgroundColor={isSubscribed(item.ActivitiesBooking)}>
+              (<Aside key={index} backgroundColor={isSubscribed(item.ActivitiesBooking)} boxSize={getBoxSize(item.startTime, item.endTime)}>
                 <div>
                   <h3>{item.name}</h3>
                   <p>{item.startTime} - {item.endTime}</p>
@@ -61,7 +69,9 @@ export default function EventsPanel({ eventDaysId }) {
                   <SubscribeButton
                     isSubscribed={isSubscribed(item.ActivitiesBooking)}
                     availableSpots={item.maxQuantity-item.ActivitiesBooking.length}
-                    activityId={item.id} />
+                    activityId={item.id}
+                    update={update}
+                    setUpdate={setUpdate} />
                 </header>
               </Aside>)
             )}
@@ -137,7 +147,7 @@ const EventsContainer = styled.nav`
 
 const Aside = styled.div`
      width: 265px;
-     min-height: 79px;
+     min-height: ${props => (props.boxSize)}px;
      background-color: ${props => (props.backgroundColor ? '#D0FFDB' : '#F1F1F1')} !important; // AQUI VAI MUDAR A COR DO BOTÃO PRA VERDE QUANDO INSCRITO
      border-radius: 5px;
      padding-top: 10px;
